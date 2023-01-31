@@ -275,6 +275,25 @@ pub mod exported_module {
 
 - Then :point_up: in `src/main.rs` you can `use cratename::exported_module;`. Slightly tricky, look at [this cheatsheet](https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html) if you get confused.
 
+## Collections
+- These store data on the Heap. And the size can't be known at compile time.
+- Vectors `Vec<T>`
+  - `let v: Vec<i32> = Vec::new();`
+  - or the macro `vec!` as `let v = vec![1,2,3];`
+  - items can be iterated and updated using dereferencing(`*`) like this: `for i in &mut v { *i += 10 }`
+  - When a vector goes out of scope, so do its elements.
+- Strings
+  - use `format!("{s1}-{s2}")` to concatenate strings. (Uses references, so doesn't take ownership)
+  - methods like `contains` and `replace` exist
+  - CanNOT reference by index. and `.len` is also unreliable.
+  - Be explicit about you want to iterate over chars or bytes `for c in "str".chars() {}` or `for c in "str".bytes()`. Unicode scalar values may be made up of more than one byte.
+- HashMaps
+  - `let mut map = collections::HashMap::new();`
+  - Insert and get like `map.insert(String::from("a"), 10);` get returns an Option. So `.unwrap()` it.
+  - `map.entry(String::from("c")).or_insert(30);`
+  - Uses SipHash by default as its hashing function.
+
+
 ## In Practice
 ---
 - Make sure add dependencies from `crates.io` to your Cargo.toml.
