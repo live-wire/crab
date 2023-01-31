@@ -1,10 +1,12 @@
+#![allow(unused)]
+
 #[derive(Debug)]
 enum Action {
     Move { x: i32, y: i32 },
     Quit,
     Describe(String),
 }
-fn matches() {
+fn main() {
     let movenow: Action = Action::Move { x: 12, y: 33 };
     let s = do_it(&movenow);
     println!("{}", s);

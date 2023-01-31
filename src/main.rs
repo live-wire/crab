@@ -7,4 +7,9 @@ use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader, ErrorKind, Write};
 
-fn main() {}
+use crab::exported_module;
+use crab::nest1::nest2::DummyStruct;
+fn main() {
+    let ds = DummyStruct::new();
+    println!("{:?}", ds);
+}

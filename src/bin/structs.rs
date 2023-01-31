@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 #[derive(Debug)]
 struct User {
     name: String,
@@ -18,7 +20,7 @@ impl User {
         User { name, age }
     }
 }
-fn structs() {
+fn main() {
     #[derive(Debug)]
     struct Color(i32, i32, i32);
     let mut user1: User = User {

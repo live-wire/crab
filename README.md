@@ -245,6 +245,36 @@ if let Some(b) = new_action {
 }
 ```
 
+## Packages, Crates and Modules
+- Module < Crate < Package
+- Crates can be one of these:
+  - library - root @ `src/lib.rs`
+  - binary - root @ `src/main.rs`
+- Package must contain at least one crate (library or binary). It can contain as many binary crates as you like but just one library crate. Put all binary crate files in `src/bin/` to mark them as binary crates.
+- Modules are private by default. Fields in a struct in a module are private by default. Also functions are private by default.
+- Marking an enum `pub` is enough to make all its fields `pub` unlike in structs.
+- Scope and privacy is controlled by modules. Code in modules is private by default.
+- Alias for imports `use std::io::Result as IoResult;`
+- Re-exporting is useful when the internal structure of your code is different from how programmers calling your code would think about the domain. `pub use crate::some1::nested::modulex` in `src/lib.rs` will result it being available for external code to use it as `crate::modulex`.
+- It is possible to import multiple things inline like `use std::{cmp::Ordering, io};`. For bringing a child and self in one line eg: `std::io` and `std::io::Write` use `use std::io::{self, Write};`.
+- There is always the glob operator `use std::collections::*;`.
+- Splitting modules in files. Declare module once (in one file) in `src/lib.rs` is enough. Example:
+```
+src/lib.rs ->
+mod also_lib;
+public use crate::also_lib::exported_module;
+
+src/also_lib.rs ->
+pub mod exported_module;
+
+src/also_lib/exported_module.rs ->
+pub mod exported_module {
+    pub fn exported_fn() {}
+}
+```
+
+- Then :point_up: in `src/main.rs` you can `use cratename::exported_module;`. Slightly tricky, look at [this cheatsheet](https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html) if you get confused.
+
 ## In Practice
 ---
 - Make sure add dependencies from `crates.io` to your Cargo.toml.
