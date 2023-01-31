@@ -226,6 +226,25 @@ fn main() {
 }
 ```
 
+## Enums & Pattern Matching
+- Enums like structs can have fields of a variety of types. Like nested struct like types.
+- `Option<T>` enum is a great null checker generic enum (Just like in Scala). It forces you to worry about null checking. It can be `Some<T>` or `None`.
+- `match {}` must always be exhaustive. Very similar to scala.
+- Integers can also be range matched. Valid case example: `1..=20 => do_something`
+- If a match only has one check, it can be made less verbose using `if let`:
+```
+let new_action: Option<Action> = Some(Action::Quit);
+// THIS IS THE SAME AS
+match new_action {
+    Some(ref a) => println!("{:?}", a),
+    _ => (),
+};
+// THIS
+if let Some(b) = new_action {
+    println!("{:?}", b)
+}
+```
+
 ## In Practice
 ---
 - Make sure add dependencies from `crates.io` to your Cargo.toml.
