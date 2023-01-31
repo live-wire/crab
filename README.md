@@ -1,7 +1,7 @@
 # RUST :crab:
 ---
 
-- Following [this book](https://doc.rust-lang.org/book/title-page.html).
+> Following [this book](https://doc.rust-lang.org/book/title-page.html).
 
 ## Hello Rust
 - Cargo package manager + build system
@@ -173,3 +173,61 @@ let slice = &s[..]; // same
 - Slices work on other types too: `let a = [1, 2, 3, 4, 5];` , `let slice = &a[1..3];` This slice has the type `&[i32]`
 - The concepts of ownership, borrowing, and slices ensure memory safety in Rust programs at compile time.
 
+## Structs
+- Just like structs in other languages to group different types of fields together.
+- The entire instance of the struct has to be marked `mut` to make any field mutable.
+- Structs can be accompanied by an `impl` block that houses all methods and functions related to that struct. `Self` refers to the original struct inside this block. Usually you can have a function in here that returns a new instance (like a constructor).
+- Add `#[derive(Debug)]` before your struct if you want to `dbg!(...)` it or `println!("{:?}", ...)` it.
+- Like tuples, structs can also just contain types and be inline: `struct Color(i32, i32, i32);`
+- Extend a struct using values from another struct like this `User{ x: 12, ..extend_with }`
+```
+#[derive(Debug)]
+struct User {
+    name: String,
+    age: usize,
+}
+fn email(user: &User) -> String {
+    let mut x = user.name.clone();
+    x.push_str("@gmail.com");
+    x
+}
+impl User {
+    fn email_method(&self) -> String {
+        let mut x: String = self.name.clone();
+        x.push_str("+method@gmail.com");
+        x
+    }
+    fn new_user(name: String, age: usize) -> Self {
+        User { name, age }
+    }
+}
+fn main() {
+    #[derive(Debug)]
+    struct Color(i32, i32, i32);
+    let mut user1: User = User {
+        name: String::from("John"),
+        age: 12,
+    };
+    user1.age = 13;
+    let user2: User = User {
+        name: String::from("Doe"),
+        ..user1
+    };
+    let user3: User = User::new_user(String::from("Wick"), 39);
+    let color1: Color = Color(255, 0, 255);
+    dbg!(&color1);
+    println!(
+        "User1 {:?}, User2 {:?}, user3 {:?}, Color1 {:?}",
+        user1.email_method(),
+        email(&user2),
+        user3,
+        color1
+    );
+}
+```
+
+## In Practice
+---
+- Make sure add dependencies from `crates.io` to your Cargo.toml.
+- Random number in a range: `let random_num: i32 = rand::thread_rng().gen_range(1..100);`
+- 
