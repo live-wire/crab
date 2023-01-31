@@ -293,6 +293,59 @@ pub mod exported_module {
   - `map.entry(String::from("c")).or_insert(30);`
   - Uses SipHash by default as its hashing function.
 
+## Error handling
+- Types of errors in Rust:
+  - Recoverable `Result<T, E>` yields an `Ok<T>` or `Err<E>`.
+  - Non recoverable `panic!` - example: index out of bounds.
+- You can deal with recoverable errors using pattern matching or with closures:
+```
+// Pattern match
+let file_open = File::open("README.md");
+match file_open {
+    Ok(f) => println!("FOUND FILE {:?}", f),
+    Err(e) => match e.kind() {
+        ErrorKind::NotFound => panic!("CREATE FILE {:?}", e),
+        x => panic!("SOME ERROR {:?}", x),
+    },
+}
+
+// Closure
+let file_open2 = File::open("README.md");
+let f = file_open2.unwrap_or_else(|error| {
+    if error.kind() == ErrorKind::NotFound {
+        panic!("CREATE FILE {:?}", error);
+    } else {
+        panic!("SOME ERROR {:?}", error);
+    }
+});
+println!("FOUND FILE {:?}", f);
+```
+
+- If you want to panic on error, there are better shortcuts like: `.unwrap()` or `.expect("Error message")`.
+- Error propagation shortcut: The amazing `?` operator can be used to return an error back to the parent function. (Of course the parent function should also return a `Result<T,E>`). It also works with `Option<T>`. Example:
+```
+fn read_username_from_file(filepath: String) -> Result<String, io::Error> {
+    let fo = File::open(filepath);
+    let mut ff = match fo {
+        Ok(fi) => fi,
+        Err(e) => return Err(e),
+    };
+
+    let mut username = String::new();
+    match ff.read_to_string(&mut username) {
+        Ok(_) => Ok(username),
+        Err(e) => Err(e),
+    }
+}
+// IS THE SAME AS THIS
+
+fn read_username_from_file_clean(filepath: String) -> Result<String, io::Error> {
+    let mut username: String = String::new();
+    File::open(filepath)?.read_to_string(&mut username)?;
+    Ok(username)
+}
+```
+
 
 ## In Practice
 ---
