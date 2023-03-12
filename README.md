@@ -370,6 +370,50 @@ impl Point<f32> {
 - This implements the `distance_from_origin` only when T is an f32 else this function will not be available.
 - *Monomorphization* is the process of turning generic code into specific code by filling in the concrete types that are used when compiled. So, the generated code is just as fast.
 
+## Traits
+---
+- Like GoLang, traits are just groups of functions. (Can also have default implementations).
+- You can implement a trait for a type as:
+```
+pub trait Summary {
+    fn summarize(&self) -> String;
+}
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
+    }
+}
+// tweet.summarize(); is available
+```
+
+- To use the trait implementation functions, you need to import the trait explicitly as well. Like: `use aggregator::{Summary, Tweet};`
+- You can implement an imported trait on a Type that your crate defines. (Not when both are imported. Duh).
+- Traits can also have default implementations but you still need to explicitly define the impl for a type and import both trait and type to use it.
+```
+pub trait Summary {
+    fn summarize(&self) -> String {
+        String::from("(Read more...)")
+    }
+}
+impl Summary for Tweet {}
+```
+
+- You can then ofcourse use traits in function definitions:
+```
+pub fn notify(item: &impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}
+// IS THE SAME AS
+pub fn notify<T: Summary>(item: &T) {
+    println!("Breaking news! {}", item.summarize());
+}
+```
 
 ## In Practice
 ---
