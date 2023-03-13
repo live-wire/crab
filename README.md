@@ -415,6 +415,28 @@ pub fn notify<T: Summary>(item: &T) {
 }
 ```
 
+## Lifetimes
+---
+- When references are passed, rust needs to make sure no references are left dangling.
+- Lifetimes are denoted by `apostophe variable space` and defined in angular brackets with other generics.
+- It tries to figure out lifetimes on its own using some rules:
+  - The first rule is that the compiler assigns a lifetime parameter to each parameter that’s a reference.
+  - The second rule is that, if there is exactly one input lifetime parameter, that lifetime is assigned to all output lifetime parameters: fn `foo<'a>(x: &'a i32) -> &'a i32`.
+  - The third rule is that, if there are multiple input lifetime parameters, but one of them is &self or &mut self because this is a method, the lifetime of self is assigned to all output lifetime parameters.
+- One special lifetime we need to discuss is 'static, which denotes that the affected reference can live for the entire duration of the program `let s: &'static str = "I have a static lifetime.";`
+- Example that gets longest string (needs lifetimes because Rust can't be sure which input string reference will go out of scope first).
+```
+fn longest_with_an_announcement<'a, T: Display>(x: &'a str, y: &'a str, ann: T) -> &'a str {
+    println!("Announcement! {}", ann);
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+```
+
+
 ## In Practice
 ---
 - Make sure add dependencies from `crates.io` to your Cargo.toml.
